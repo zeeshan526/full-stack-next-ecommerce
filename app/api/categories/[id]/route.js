@@ -27,7 +27,7 @@ export async function GET() {
         $project: {
           categoryName: 1,
           createdAt: 1,
-          parentCategoryName: { $ifNull: ["$parentCategoryDetails.categoryName", "None"] }, // Return parent category name or 'None'
+          parentCategoryName: { $ifNull: ["$parentCategoryDetails.categoryName", "None"] },
         },
       },
     ]).toArray();
@@ -78,10 +78,9 @@ export async function DELETE(request, { params }) {
 }
 
 // PATCH: Update a category by ID
-// PATCH: Update a category by ID
 export async function PATCH(request, { params }) {
   try {
-    const data = await request.json();  // Parse incoming JSON data
+    const data = await request.json(); 
     const client = await clientPromise;
     const db = client.db("next-ecommerce");
 
@@ -113,7 +112,7 @@ export async function PATCH(request, { params }) {
         category: {
           id: categoryId, // Send the updated category ID
           categoryName: data.categoryName.trim(),
-          parentCategoryName: parentCategoryName || "None", // Show parent category or 'None'
+          parentCategoryName: parentCategoryName || "None", 
         },
       }),
       {

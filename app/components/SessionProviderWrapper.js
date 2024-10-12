@@ -1,6 +1,4 @@
-// app/components/SessionProviderWrapper.js
-
-"use client"; // Mark this as a client component
+"use client";
 
 import { SessionProvider } from "next-auth/react";
 

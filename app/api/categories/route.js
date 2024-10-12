@@ -3,9 +3,8 @@ import { ObjectId } from "mongodb";
 
 export async function POST(request) {
   try {
-    const data = await request.json(); // Parse the incoming JSON request body
+    const data = await request.json();
 
-    // Server-side validation: ensure category name is present
     if (!data.categoryName || data.categoryName.trim() === "") {
       return new Response(
         JSON.stringify({ error: "Category name is required" }),
@@ -16,14 +15,14 @@ export async function POST(request) {
       );
     }
 
-    const client = await clientPromise; // Get the MongoDB client
+    const client = await clientPromise; 
     const db = client.db("next-ecommerce");
 
     // Insert the new category into the "categories" collection
     const result = await db.collection("categories").insertOne({
       categoryName: data.categoryName.trim(),
-      parentCategory: data.parentCategory ? new ObjectId(data.parentCategory) : null, // Save parent category
-      createdAt: new Date(), // Add a createdAt timestamp
+      parentCategory: data.parentCategory ? new ObjectId(data.parentCategory) : null, 
+      createdAt: new Date(), 
     });
 
     // Fetch the parent category name (if any)
@@ -33,7 +32,6 @@ export async function POST(request) {
       parentCategoryName = parentCategory ? parentCategory.categoryName : null;
     }
 
-    // Return a success message along with the inserted category data including the parent category name
     return new Response(
       JSON.stringify({
         success: true,

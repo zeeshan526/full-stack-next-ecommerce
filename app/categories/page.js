@@ -1,28 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]); // State to hold categories
-  const [categoryName, setCategoryName] = useState(''); // State for category name
-  const [parentCategory, setParentCategory] = useState(''); // State for parent category
-  const [isEditing, setIsEditing] = useState(false); // Track if editing
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Track selected category ID
-  const [showModal, setShowModal] = useState(false); // Modal visibility
-  const [loading, setLoading] = useState(false); // Loading state for category listing
-  const [updating, setUpdating] = useState(false); // State for updating loader
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // Delete modal visibility
-  const [categoryToDelete, setCategoryToDelete] = useState(null); // Category to be deleted
+  const [categories, setCategories] = useState([]); 
+  const [categoryName, setCategoryName] = useState('');
+  const [parentCategory, setParentCategory] = useState(''); 
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); 
+  const [showModal, setShowModal] = useState(false); 
+  const [loading, setLoading] = useState(false); 
+  const [updating, setUpdating] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null); 
 
-  // Fetch categories when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
       try {
         const response = await axios.get("/api/categories");
-        setCategories(response.data); // Set categories
+        setCategories(response.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
         toast.error("Failed to fetch categories");
@@ -34,26 +33,23 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
-  // Open modal for adding a new category
   const openModalForAdd = () => {
-    setCategoryName(''); // Clear input
-    setParentCategory(''); // Clear parent category select
-    setIsEditing(false); // Set to add mode
-    setShowModal(true); // Show modal
+    setCategoryName(''); 
+    setParentCategory('');
+    setIsEditing(false);
+    setShowModal(true);
   };
 
-  // Open modal for editing an existing category
   const openModalForEdit = (id, name, parentCategoryName) => {
-    setCategoryName(name); // Set category name to the selected one
+    setCategoryName(name);
     // Find the parent category by its name (if editing)
     const parentCategoryId = categories.find(cat => cat.categoryName === parentCategoryName)?._id || '';
     setParentCategory(parentCategoryId); // Set parent category ID if available
     setSelectedCategoryId(id); // Set selected category ID
-    setIsEditing(true); // Set to edit mode
-    setShowModal(true); // Show modal
+    setIsEditing(true); 
+    setShowModal(true);
   };
 
-  // Handle saving (create or update)
   const handleSaveCategory = async (e) => {
     e.preventDefault();
     
@@ -62,55 +58,49 @@ export default function CategoriesPage() {
       return;
     }
 
-    const data = { categoryName, parentCategory: parentCategory || null }; // Send parentCategory as null if not selected
+    const data = { categoryName, parentCategory: parentCategory || null }; 
     
     try {
-      setUpdating(true); // Start loader for updating
+      setUpdating(true); 
       if (isEditing) {
-        // Update existing category
         const response = await axios.patch(`/api/categories/${selectedCategoryId}`, data);
         toast.success("Category updated successfully!");
-        // Update the category in the list with the new details
         setCategories(categories.map(cat =>
           cat._id === selectedCategoryId ? { ...cat, categoryName, parentCategoryName: response.data.category.parentCategoryName } : cat
         ));
       } else {
-        // Create new category
         const response = await axios.post("/api/categories", data);
         toast.success("Category created successfully!");
-        setCategories([...categories, response.data.category]); // Add new category to list
+        setCategories([...categories, response.data.category]);
       }
 
-      setShowModal(false); // Close modal
+      setShowModal(false); 
     } catch (error) {
       toast.error("Failed to save category. Please try again.");
     } finally {
-      setUpdating(false); // Stop loader for updating
+      setUpdating(false); 
     }
   };
 
-  // Handle delete category
   const handleDeleteCategory = async () => {
     setLoading(true);
     try {
       await axios.delete(`/api/categories/${categoryToDelete}`);
-      setCategories(categories.filter(cat => cat._id !== categoryToDelete)); // Remove deleted category
+      setCategories(categories.filter(cat => cat._id !== categoryToDelete)); 
       toast.success("Category deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete category. Please try again.");
     } finally {
       setLoading(false);
-      setShowDeleteModal(false); // Close delete confirmation modal
+      setShowDeleteModal(false); 
     }
   };
 
-  // Open confirmation modal for delete
   const openDeleteModal = (id) => {
-    setCategoryToDelete(id); // Set category ID for deletion
-    setShowDeleteModal(true); // Show confirmation modal
+    setCategoryToDelete(id); 
+    setShowDeleteModal(true); 
   };
 
-  // Close modal without saving
   const closeModal = () => {
     setShowModal(false);
     setSelectedCategoryId(null);
@@ -118,7 +108,6 @@ export default function CategoriesPage() {
     setParentCategory('');
   };
 
-  // Close delete confirmation modal
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
     setCategoryToDelete(null);
@@ -126,12 +115,8 @@ export default function CategoriesPage() {
 
   return (
     <div>
-      {/* Toast Notifications */}
-      <Toaster position="top-right" reverseOrder={false} />
-
       <h1 className="text-2xl font-bold mb-4">Categories</h1>
 
-      {/* Add Category Button */}
       <button
         className="bg-green-500 text-white py-2 px-4 mb-4 rounded-md hover:bg-green-600"
         onClick={openModalForAdd}
@@ -139,7 +124,6 @@ export default function CategoriesPage() {
         Add Category
       </button>
 
-      {/* Loader for updating */}
       {updating && (
         <div className="flex justify-center items-center mt-6">
           <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
@@ -147,7 +131,6 @@ export default function CategoriesPage() {
         </div>
       )}
 
-      {/* Categories Table */}
       {loading ? (
         <div className="flex justify-center items-center mt-6">
           <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
@@ -175,7 +158,7 @@ export default function CategoriesPage() {
                     <tr key={category._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.categoryName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {category.parentCategoryName || "None"} {/* Display parent category name */}
+                        {category.parentCategoryName || "None"} 
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
                         <button
@@ -186,7 +169,7 @@ export default function CategoriesPage() {
                         </button>
                         <button
                           className="text-red-600 flex hover:text-red-900 font-bold px-3 py-1 rounded-md border border-red-600 hover:bg-red-100 transition duration-200"
-                          onClick={() => openDeleteModal(category._id)} // Open delete confirmation modal
+                          onClick={() => openDeleteModal(category._id)}
                         >
                           <TrashIcon className="h-4 w-4 mr-1" /> Delete
                         </button>
@@ -202,7 +185,6 @@ export default function CategoriesPage() {
         </div>
       )}
 
-      {/* Modal for Adding/Editing Category */}
       {showModal && (
         <div
           className={`fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-500 ease-out`}
@@ -222,16 +204,15 @@ export default function CategoriesPage() {
                 onChange={(e) => setCategoryName(e.target.value)}
                 className="border rounded-md p-2 w-full mb-4"
               />
-              {/* Parent Category Select */}
               <label className="block mb-2 text-gray-700">Parent Category</label>
               <select
                 value={parentCategory}
                 onChange={(e) => setParentCategory(e.target.value)}
                 className="border rounded-md p-2 w-full mb-4"
               >
-                <option value="">Select category</option> {/* First option */}
+                <option value="">Select category</option> 
                 {categories
-                  .filter((cat) => cat._id !== selectedCategoryId) // Prevent self-selection as parent
+                  .filter((cat) => cat._id !== selectedCategoryId) 
                   .map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.categoryName}
@@ -257,7 +238,6 @@ export default function CategoriesPage() {
         </div>
       )}
 
-      {/* Confirmation Modal for Deletion */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
