@@ -2,26 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+input, textarea{
+  @apply border-2 border-gray-200 p-2 rounded-md px-1 w-full;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+input:focus,textarea:focus{
+  @apply border-blue-900;
 }
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+h1{
+  @apply text-blue-900 text-2xl font-bold mb-4;
 }
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+label{
+  @apply text-blue-900 mb-2 block;
+}
+.btn-primary{
+  @apply bg-blue-900 text-white px-4 py-1 rounded-md;
 }
