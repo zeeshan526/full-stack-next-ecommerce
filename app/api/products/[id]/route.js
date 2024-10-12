@@ -10,16 +10,43 @@ export async function GET(request, { params }) {
     // Convert the id parameter to ObjectId
     const productId = new ObjectId(params.id);
 
-    const product = await db.collection("products").findOne({ _id: productId });
+    // Perform an aggregation to lookup the category for the product
+    const product = await db.collection("products").aggregate([
+      { $match: { _id: productId } }, // Match the specific product by ID
+      {
+        $lookup: {
+          from: "categories", // The categories collection
+          localField: "category", // The category field in the product
+          foreignField: "_id", // The _id field in the categories collection
+          as: "categoryDetails", // Join the category details
+        }
+      },
+      {
+        $unwind: {
+          path: "$categoryDetails", // Unwind to show the category details
+          preserveNullAndEmptyArrays: true, // Allow products with no category
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          price: 1,
+          createdAt: 1,
+          categoryId: "$categoryDetails._id", // Return the category ID for pre-selection
+          categoryName: { $ifNull: ["$categoryDetails.categoryName", "Uncategorized"] }, // Include the category name or default
+        }
+      }
+    ]).toArray();
 
-    if (!product) {
+    if (!product.length) {
       return new Response(JSON.stringify({ error: "Product not found" }), {
         status: 404,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify(product), {
+    return new Response(JSON.stringify(product[0]), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -32,6 +59,11 @@ export async function GET(request, { params }) {
   }
 }
 
+
+
+
+
+
 // PATCH: Update a product by ID
 export async function PATCH(request, { params }) {
   try {
@@ -42,9 +74,15 @@ export async function PATCH(request, { params }) {
     // Convert the id parameter to ObjectId
     const productId = new ObjectId(params.id);
 
+    // Ensure the category is converted to ObjectId if it exists
+    if (data.category) {
+      data.category = new ObjectId(data.category); // Convert category to ObjectId
+    }
+
+    // Update the product in the database
     const result = await db.collection("products").updateOne(
       { _id: productId },
-      { $set: data }
+      { $set: data } // Update only the provided fields
     );
 
     if (result.modifiedCount === 1) {

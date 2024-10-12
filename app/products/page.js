@@ -31,6 +31,9 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
+  console.log("products",products);
+  
+
   const openModal = (id) => {
     setSelectedProductId(id);
     setShowModal(true);
@@ -80,6 +83,9 @@ export default function ProductsPage() {
                       Title
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category
+                      </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Description
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -94,6 +100,7 @@ export default function ProductsPage() {
                   {products.map((product) => (
                     <tr key={product._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.title}</td>
+                      <td>{product.categoryName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.description}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex">

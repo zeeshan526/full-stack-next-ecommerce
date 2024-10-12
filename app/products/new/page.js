@@ -1,31 +1,47 @@
 'use client'
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from 'next/navigation'; // useRouter and useSearchParams for edit functionality
-import { Toaster, toast } from 'react-hot-toast'; // Import React Hot Toast
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function NewProductsPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [isEditing, setIsEditing] = useState(false); // Track if we're in edit mode
-  const router = useRouter(); 
-  const searchParams = useSearchParams(); // Get the query parameters
-  const productId = searchParams.get('id'); // Get product ID from query string if present
+  const [isEditing, setIsEditing] = useState(false);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
+  const [category, setCategory] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams.get('id');
 
-  // Fetch product data if in edit mode
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("/api/categories");
+        setCategoriesOptions(response.data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     if (productId) {
-      setIsEditing(true); // We're in edit mode if productId exists
+      setIsEditing(true); 
       const fetchProduct = async () => {
         try {
           const response = await axios.get(`/api/products/${productId}`);
           const product = response.data;
-
-          // Populate the form fields with the existing product data
-          setTitle(product.title); 
+      
+          setTitle(product.title);
           setDescription(product.description);
           setPrice(product.price);
+          setCategory(product.categoryId);
         } catch (error) {
           console.error('Failed to fetch product:', error);
           toast.error('Failed to fetch product details.');
@@ -34,31 +50,27 @@ export default function NewProductsPage() {
 
       fetchProduct();
     }
-  }, [productId]); // Runs when productId changes (i.e., on edit mode)
+  }, [productId]); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation: Check if all fields are filled
-    if (!title || !description || !price) {
+    if (!title || !description || !price || !category) {
       toast.error("All fields are required");
       return;
     }
 
-    const data = { title, description, price };
+    const data = { title, description, price, category };
 
     try {
       if (isEditing) {
-        // If in edit mode, send a PATCH request to update the product
         await axios.patch(`/api/products/${productId}`, data);
         toast.success("Product updated successfully!");
       } else {
-        // If in create mode, send a POST request to create a new product
         await axios.post('/api/products', data);
         toast.success("Product created successfully!");
       }
 
-      // Redirect to /products page after success
       setTimeout(() => {
         router.push('/products');
       }, 1000);
@@ -66,6 +78,7 @@ export default function NewProductsPage() {
       toast.error(err.response?.data?.error || 'Failed to submit the product');
     }
   };
+  console.log("category", category);
 
   return (
     <div className="p-4">
@@ -80,6 +93,19 @@ export default function NewProductsPage() {
           onChange={(e) => setTitle(e.target.value)}
           className="border rounded-md p-2 w-full mb-4"
         />
+        <label className="block mb-2">Category</label>
+        <select 
+        className="border rounded-md p-2 w-full mb-4"
+        value={category}
+        onChange={e=>setCategory(e.target.value)}
+        >
+          <option>Select Category</option>
+          {categoriesOptions?.length && categoriesOptions?.map(c => (
+            <option  key={c._id} value={c._id}>
+              {c.categoryName}
+            </option>
+          ))}
+        </select>
         <label className="block mb-2">Description</label>
         <textarea
           placeholder="Description"
