@@ -52,35 +52,50 @@ export default function CategoriesPage() {
 
   const handleSaveCategory = async (e) => {
     e.preventDefault();
-    
+  
     if (!categoryName) {
       toast.error("Category name is required");
       return;
     }
-
-    const data = { categoryName, parentCategory: parentCategory || null }; 
-    
+  
+    const data = { categoryName, parentCategory: parentCategory || null };
+  
     try {
-      setUpdating(true); 
+      setUpdating(true);
+  
       if (isEditing) {
         const response = await axios.patch(`/api/categories/${selectedCategoryId}`, data);
         toast.success("Category updated successfully!");
+  
+        // Update the existing category in the state
         setCategories(categories.map(cat =>
-          cat._id === selectedCategoryId ? { ...cat, categoryName, parentCategoryName: response.data.category.parentCategoryName } : cat
+          cat._id === selectedCategoryId
+            ? { ...cat, categoryName, parentCategoryName: response.data.category.parentCategoryName }
+            : cat
         ));
       } else {
+        // Create new category
         const response = await axios.post("/api/categories", data);
         toast.success("Category created successfully!");
-        setCategories([...categories, response.data.category]);
+  
+        setCategories(prevCategories => [
+          ...prevCategories,
+          {
+            _id: response.data.category.id, 
+            categoryName: response.data.category.categoryName,
+            parentCategoryName: response.data.category.parentCategoryName || "None"
+          }
+        ]);
       }
-
+  
       setShowModal(false); 
     } catch (error) {
       toast.error("Failed to save category. Please try again.");
     } finally {
-      setUpdating(false); 
+      setUpdating(false);
     }
   };
+  
 
   const handleDeleteCategory = async () => {
     setLoading(true);

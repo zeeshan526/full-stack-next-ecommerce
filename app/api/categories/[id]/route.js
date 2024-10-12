@@ -78,17 +78,23 @@ export async function DELETE(request, { params }) {
 }
 
 // PATCH: Update a category by ID
+// PATCH: Update a category by ID
 export async function PATCH(request, { params }) {
   try {
-    const data = await request.json(); 
+    const data = await request.json();  // Parse incoming JSON data
     const client = await clientPromise;
     const db = client.db("next-ecommerce");
 
     const categoryId = new ObjectId(params.id);
 
+    // Check if parentCategory is a valid ObjectId, else set it to null
+    const parentCategory = data.parentCategory && data.parentCategory !== "" 
+      ? new ObjectId(data.parentCategory) 
+      : null;
+
     const result = await db.collection("categories").updateOne(
       { _id: categoryId },
-      { $set: { categoryName: data.categoryName.trim(), parentCategory: data.parentCategory ? new ObjectId(data.parentCategory) : null } }
+      { $set: { categoryName: data.categoryName.trim(), parentCategory: parentCategory } }
     );
 
     if (result.matchedCount === 0) {
@@ -100,9 +106,9 @@ export async function PATCH(request, { params }) {
 
     // Fetch the parent category name (if any)
     let parentCategoryName = null;
-    if (data.parentCategory) {
-      const parentCategory = await db.collection("categories").findOne({ _id: new ObjectId(data.parentCategory) });
-      parentCategoryName = parentCategory ? parentCategory.categoryName : null;
+    if (parentCategory) {
+      const parent = await db.collection("categories").findOne({ _id: parentCategory });
+      parentCategoryName = parent ? parent.categoryName : null;
     }
 
     return new Response(
@@ -110,9 +116,9 @@ export async function PATCH(request, { params }) {
         success: true,
         message: "Category updated successfully!",
         category: {
-          id: categoryId, // Send the updated category ID
+          id: categoryId,
           categoryName: data.categoryName.trim(),
-          parentCategoryName: parentCategoryName || "None", 
+          parentCategoryName: parentCategoryName || "None",
         },
       }),
       {
@@ -128,4 +134,5 @@ export async function PATCH(request, { params }) {
     });
   }
 }
+
 
