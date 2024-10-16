@@ -5,16 +5,17 @@ import { toast } from "react-hot-toast";
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState([]); 
+  const [categories, setCategories] = useState([]);
   const [categoryName, setCategoryName] = useState('');
-  const [parentCategory, setParentCategory] = useState(''); 
+  const [parentCategory, setParentCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); 
-  const [showModal, setShowModal] = useState(false); 
-  const [loading, setLoading] = useState(false); 
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState(null); 
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,7 +35,7 @@ export default function CategoriesPage() {
   }, []);
 
   const openModalForAdd = () => {
-    setCategoryName(''); 
+    setCategoryName('');
     setParentCategory('');
     setIsEditing(false);
     setShowModal(true);
@@ -46,27 +47,27 @@ export default function CategoriesPage() {
     const parentCategoryId = categories.find(cat => cat.categoryName === parentCategoryName)?._id || '';
     setParentCategory(parentCategoryId); // Set parent category ID if available
     setSelectedCategoryId(id); // Set selected category ID
-    setIsEditing(true); 
+    setIsEditing(true);
     setShowModal(true);
   };
 
   const handleSaveCategory = async (e) => {
     e.preventDefault();
-  
+
     if (!categoryName) {
       toast.error("Category name is required");
       return;
     }
-  
+
     const data = { categoryName, parentCategory: parentCategory || null };
-  
+
     try {
       setUpdating(true);
-  
+
       if (isEditing) {
         const response = await axios.patch(`/api/categories/${selectedCategoryId}`, data);
         toast.success("Category updated successfully!");
-  
+
         // Update the existing category in the state
         setCategories(categories.map(cat =>
           cat._id === selectedCategoryId
@@ -77,43 +78,43 @@ export default function CategoriesPage() {
         // Create new category
         const response = await axios.post("/api/categories", data);
         toast.success("Category created successfully!");
-  
+
         setCategories(prevCategories => [
           ...prevCategories,
           {
-            _id: response.data.category.id, 
+            _id: response.data.category.id,
             categoryName: response.data.category.categoryName,
             parentCategoryName: response.data.category.parentCategoryName || "None"
           }
         ]);
       }
-  
-      setShowModal(false); 
+
+      setShowModal(false);
     } catch (error) {
       toast.error("Failed to save category. Please try again.");
     } finally {
       setUpdating(false);
     }
   };
-  
+
 
   const handleDeleteCategory = async () => {
     setLoading(true);
     try {
       await axios.delete(`/api/categories/${categoryToDelete}`);
-      setCategories(categories.filter(cat => cat._id !== categoryToDelete)); 
+      setCategories(categories.filter(cat => cat._id !== categoryToDelete));
       toast.success("Category deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete category. Please try again.");
     } finally {
       setLoading(false);
-      setShowDeleteModal(false); 
+      setShowDeleteModal(false);
     }
   };
 
   const openDeleteModal = (id) => {
-    setCategoryToDelete(id); 
-    setShowDeleteModal(true); 
+    setCategoryToDelete(id);
+    setShowDeleteModal(true);
   };
 
   const closeModal = () => {
@@ -127,6 +128,28 @@ export default function CategoriesPage() {
     setShowDeleteModal(false);
     setCategoryToDelete(null);
   };
+
+  const addNewProperties = () => {
+    setProperties((prev) => [...prev, { name: "", value: "" }]);
+  };
+
+  const removeProperty = (index) => {
+    setProperties((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const handleNameChange = (index, newValue) => {
+    setProperties((prev) =>
+      prev.map((property, i) => (i === index ? { ...property, name: newValue } : property))
+    );
+  };
+
+  const handleValueChange = (index, newValue) => {
+    setProperties((prev) =>
+      prev.map((property, i) => (i === index ? { ...property, value: newValue } : property))
+    );
+  };
+
+
 
   return (
     <div>
@@ -173,7 +196,7 @@ export default function CategoriesPage() {
                     <tr key={category._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{category.categoryName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {category.parentCategoryName || "None"} 
+                        {category.parentCategoryName || "None"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
                         <button
@@ -202,10 +225,10 @@ export default function CategoriesPage() {
 
       {showModal && (
         <div
-          className={`fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-500 ease-out`}
+          className={`fixed inset-0 bg-gray-900 bg-opacity-50 flex items-start pt-10 justify-center z-50 transition-opacity duration-500 ease-out`}
         >
           <div
-            className={`bg-white p-8 rounded-lg shadow-lg max-w-md w-full transform transition-transform duration-500 ease-out`}
+            className={`bg-white p-8 rounded-lg shadow-lg max-w-screen-lg w-full transform transition-transform duration-500 ease-out`}
           >
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
               {isEditing ? "Edit Category" : "Add Category"}
@@ -225,15 +248,52 @@ export default function CategoriesPage() {
                 onChange={(e) => setParentCategory(e.target.value)}
                 className="border rounded-md p-2 w-full mb-4"
               >
-                <option value="">Select category</option> 
+                <option value="">Select category</option>
                 {categories
-                  .filter((cat) => cat._id !== selectedCategoryId) 
+                  .filter((cat) => cat._id !== selectedCategoryId)
                   .map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.categoryName}
                     </option>
                   ))}
               </select>
+              {/* properties start */}
+              <div>
+                <button
+                  type="button"
+                  className=" text-emerald-600 font-semibold px-4 py-2 mb-3 rounded-lg shadow-md"
+                  onClick={addNewProperties}
+                >
+                  + Add Properties
+                </button>
+                {properties?.length > 0 &&
+                  properties.map((property, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="Enter name"
+                        value={property.name}
+                        onChange={(e) => handleNameChange(index, e.target.value)}
+                        className="border rounded-md p-2 w-full mb-4"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Enter value"
+                        value={property.value}
+                        onChange={(e) => handleValueChange(index, e.target.value)}
+                        className="border rounded-md p-2 w-full mb-4"
+                      />
+                <button
+                  type="button"
+                  className=" text-red-600 font-semibold px-4 py-2 mt-0 mb-5 rounded-lg shadow-md"
+                  onClick={()=>removeProperty(index)}
+                >
+                  Remove
+                </button>
+                    </div>
+                  ))}
+              </div>
+              {/* properties end */}
               <div className="flex justify-end space-x-4">
                 <button
                   className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-lg"
