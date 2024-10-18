@@ -27,6 +27,7 @@ export async function GET() {
         $project: {
           categoryName: 1,
           createdAt: 1,
+          properties:1,
           parentCategoryName: { $ifNull: ["$parentCategoryDetails.categoryName", "None"] },
         },
       },
@@ -92,9 +93,12 @@ export async function PATCH(request, { params }) {
       ? new ObjectId(data.parentCategory) 
       : null;
 
+    // Ensure that properties are an array of objects
+    const properties = Array.isArray(data.properties) ? data.properties : [];
+
     const result = await db.collection("categories").updateOne(
       { _id: categoryId },
-      { $set: { categoryName: data.categoryName.trim(), parentCategory: parentCategory } }
+      { $set: { categoryName: data.categoryName.trim(), parentCategory: parentCategory, properties: properties } }
     );
 
     if (result.matchedCount === 0) {
@@ -119,6 +123,7 @@ export async function PATCH(request, { params }) {
           id: categoryId,
           categoryName: data.categoryName.trim(),
           parentCategoryName: parentCategoryName || "None",
+          properties:properties,
         },
       }),
       {

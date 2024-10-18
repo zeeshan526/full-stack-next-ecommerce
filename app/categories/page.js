@@ -22,6 +22,8 @@ export default function CategoriesPage() {
       setLoading(true);
       try {
         const response = await axios.get("/api/categories");
+        console.log("response",response.data);
+        
         setCategories(response.data);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -34,19 +36,26 @@ export default function CategoriesPage() {
     fetchCategories();
   }, []);
 
+  console.log("categories",categories);
+  
+
   const openModalForAdd = () => {
     setCategoryName('');
     setParentCategory('');
+    setProperties([]); 
     setIsEditing(false);
     setShowModal(true);
   };
 
-  const openModalForEdit = (id, name, parentCategoryName) => {
+  const openModalForEdit = (id, name, parentCategoryName, properties=[] ) => {
+    console.log("properties",properties);
+    
     setCategoryName(name);
     // Find the parent category by its name (if editing)
     const parentCategoryId = categories.find(cat => cat.categoryName === parentCategoryName)?._id || '';
     setParentCategory(parentCategoryId); // Set parent category ID if available
     setSelectedCategoryId(id); // Set selected category ID
+    setProperties(properties && properties.length > 0 ? properties : [{ name: "", value: "" }]);
     setIsEditing(true);
     setShowModal(true);
   };
@@ -59,7 +68,7 @@ export default function CategoriesPage() {
       return;
     }
 
-    const data = { categoryName, parentCategory: parentCategory || null };
+    const data = { categoryName, parentCategory: parentCategory || null, properties };
 
     try {
       setUpdating(true);
@@ -71,7 +80,10 @@ export default function CategoriesPage() {
         // Update the existing category in the state
         setCategories(categories.map(cat =>
           cat._id === selectedCategoryId
-            ? { ...cat, categoryName, parentCategoryName: response.data.category.parentCategoryName }
+            ? { ...cat, categoryName,
+               parentCategoryName: response.data.category.parentCategoryName,
+               properties: response.data.category.properties 
+              }
             : cat
         ));
       } else {
@@ -84,7 +96,9 @@ export default function CategoriesPage() {
           {
             _id: response.data.category.id,
             categoryName: response.data.category.categoryName,
-            parentCategoryName: response.data.category.parentCategoryName || "None"
+            parentCategoryName: response.data.category.parentCategoryName || "None",
+            properties: response.data.category.properties
+
           }
         ]);
       }
@@ -201,7 +215,7 @@ export default function CategoriesPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
                         <button
                           className="flex items-center text-indigo-600 hover:text-indigo-900 font-bold px-3 py-1 rounded-md border border-indigo-600 hover:bg-indigo-100 transition duration-200 mr-2"
-                          onClick={() => openModalForEdit(category._id, category.categoryName, category.parentCategoryName)}
+                          onClick={() => openModalForEdit(category._id, category.categoryName, category.parentCategoryName, category.properties)}
                         >
                           <PencilIcon className="h-4 w-4 mr-1" /> Edit
                         </button>

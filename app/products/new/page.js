@@ -16,6 +16,7 @@ export default function NewProductsPage() {
   const productId = searchParams.get('id');
 
 
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -32,12 +33,12 @@ export default function NewProductsPage() {
 
   useEffect(() => {
     if (productId) {
-      setIsEditing(true); 
+      setIsEditing(true);
       const fetchProduct = async () => {
         try {
           const response = await axios.get(`/api/products/${productId}`);
           const product = response.data;
-      
+
           setTitle(product.title);
           setDescription(product.description);
           setPrice(product.price);
@@ -50,7 +51,7 @@ export default function NewProductsPage() {
 
       fetchProduct();
     }
-  }, [productId]); 
+  }, [productId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +61,7 @@ export default function NewProductsPage() {
       return;
     }
 
-    const data = { title, description, price, category };
+    const data = { title, description, price, category, };
 
     try {
       if (isEditing) {
@@ -78,7 +79,7 @@ export default function NewProductsPage() {
       toast.error(err.response?.data?.error || 'Failed to submit the product');
     }
   };
-  console.log("category", category);
+  console.log("categoriesOptions", categoriesOptions);
 
   return (
     <div className="p-4">
@@ -94,18 +95,42 @@ export default function NewProductsPage() {
           className="border rounded-md p-2 w-full mb-4"
         />
         <label className="block mb-2">Category</label>
-        <select 
-        className="border rounded-md p-2 w-full mb-4"
-        value={category}
-        onChange={e=>setCategory(e.target.value)}
+        <select
+          className="border rounded-md p-2 w-full mb-4"
+          value={category}
+          onChange={e => setCategory(e.target.value)}
         >
           <option>Select Category</option>
           {categoriesOptions?.length && categoriesOptions?.map(c => (
-            <option  key={c._id} value={c._id}>
+            <option key={c._id} value={c._id}>
               {c.categoryName}
             </option>
           ))}
         </select>
+        {/* properties select */}
+        {categoriesOptions?.map(categoryOption => (
+          categoryOption._id === category && categoryOption.properties?.length > 0 && (
+            <div key={categoryOption._id}>
+              <h3 className="text-lg font-semibold mb-2">Category Properties:</h3>
+              {categoryOption.properties.map((prop, index) => (
+                <div key={index}>
+                  <label className="block mb-2">{prop.name}</label>
+                  <select
+                    className="border rounded-md p-2 w-full mb-4"
+                  >
+                    <option value="">Select {prop.name} Value</option>
+                    {prop.value.split(',').map((val, i) => (
+                      <option key={i} value={val.trim()}>
+                        {val.trim()}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          )
+        ))}
+
         <label className="block mb-2">Description</label>
         <textarea
           placeholder="Description"

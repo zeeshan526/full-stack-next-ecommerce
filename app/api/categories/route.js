@@ -18,9 +18,13 @@ export async function POST(request) {
     const client = await clientPromise; 
     const db = client.db("next-ecommerce");
 
+     // Ensure that properties are an array of objects
+     const properties = Array.isArray(data.properties) ? data.properties : [];
+
     // Insert the new category into the "categories" collection
     const result = await db.collection("categories").insertOne({
       categoryName: data.categoryName.trim(),
+      properties:properties,
       parentCategory: data.parentCategory ? new ObjectId(data.parentCategory) : null, 
       createdAt: new Date(), 
     });
@@ -40,6 +44,7 @@ export async function POST(request) {
           id: result.insertedId,
           categoryName: data.categoryName.trim(),
           parentCategoryName: parentCategoryName || "None",
+          properties:properties || [],
           createdAt: new Date(),
         },
       }),
@@ -88,6 +93,7 @@ export async function GET() {
           $project: {
             categoryName: 1,
             createdAt: 1,
+            properties:1,
             parentCategoryName: { $ifNull: ["$parentCategoryDetails.categoryName", "None"] }, // Return parent category name or 'None'
           },
         },
