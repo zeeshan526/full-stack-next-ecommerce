@@ -2,25 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-/* app/components/Header.module.css */
-.header {
-  background-color: #333;
-  padding: 20px;
-}
 
-.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navLinks {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-}
-
-.navLinks a {
-  color: white;
-  text-decoration: none;
-}

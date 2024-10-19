@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import heroImage from './../public/hero.webp'; // Default image for the hero section
-import shirt from './../public/shirt.jpg'; // Default image for all products
+import heroImage from './../public/polo.jpg'; // Default image for the hero section
+import shirt from './../public/shirt.jpg'; // Example image for products
 
 export default function FeaturedProductsPage({ products }) {
   return (
@@ -22,16 +22,14 @@ export default function FeaturedProductsPage({ products }) {
         </div>
 
         {/* Right Side: Image */}
-        <div className="mt-8 md:mt-0 md:w-1/2 h-96 flex justify-center items-center"> {/* Adjust the container size */}
-          <div className="relative w-full h-full"> {/* Hero image container */}
-            <Image
-              src={heroImage}
-              alt="MacBook Pro"
-              layout="fill" // Ensures the image fills the container
-              objectFit="contain" // Ensures the image fits without cutting off
-              className="rounded-lg shadow-lg"
-            />
-          </div>
+        <div className="mt-8 md:mt-0 md:w-1/2">
+          <Image
+            src={heroImage}
+            alt="MacBook Pro"
+            width={500}
+            height={500}
+            className="rounded-lg shadow-lg"
+          />
         </div>
       </div>
 
@@ -46,7 +44,7 @@ export default function FeaturedProductsPage({ products }) {
                   {/* Product Image with container */}
                   <div className="relative w-full h-64 overflow-hidden rounded-lg">
                     <Image
-                      src={shirt} // Using the default image for now
+                      src={shirt} // Using a default image for now
                       alt={product.name}
                       layout="fill" // Ensures the image fills the container
                       objectFit="contain" // Ensures the image fits within the container without stretching or being cut off

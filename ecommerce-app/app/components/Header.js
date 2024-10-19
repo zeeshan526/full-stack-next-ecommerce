@@ -1,22 +1,63 @@
+'use client'
+import { useState } from "react";
 import Link from "next/link";
 
 export default function Header() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <header className="header">
-      <div className="container">
-      <Link href={'/'}>
-      <h1>My E-Commerce Store</h1>
-      </Link>
-        <nav>
-          <ul className="navLinks">
+    <header className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6">
+        <Link href={'/'}>
+          <h1 className="text-2xl font-bold">My E-Commerce Store</h1>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex space-x-6">
+          <Link href={'/'}>Home</Link>
+          <Link href={'/products'}>Products</Link>
+          <Link href={'/category'}>Category</Link>
+          <Link href={'/account'}>Account</Link>
+          <Link href={'/cart'}>Cart(0)</Link>
+        </nav>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="focus:outline-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white shadow-md">
+          <nav className="flex flex-col space-y-2 px-6 py-4">
             <Link href={'/'}>Home</Link>
             <Link href={'/products'}>Products</Link>
             <Link href={'/category'}>Category</Link>
             <Link href={'/account'}>Account</Link>
             <Link href={'/cart'}>Cart(0)</Link>
-          </ul>
-        </nav>
-      </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
