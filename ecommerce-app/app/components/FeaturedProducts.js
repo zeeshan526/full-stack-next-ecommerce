@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import heroImage from "./../public/polo.png"; // Default image for the hero section
+import heroImage from "./../public/polo2.jpg"; // Default image for the hero section
 import shirt from "./../public/shirt.png"; // Example image for products
 
 export default function FeaturedProductsPage({ products }) {
@@ -34,8 +34,8 @@ export default function FeaturedProductsPage({ products }) {
           <Image
             src={heroImage}
             alt="Premium Polo Shirts"
-            width={450}
-            height={450}
+            width={500}
+            height={500}
             className="rounded-lg shadow-lg"
           />
         </div>
