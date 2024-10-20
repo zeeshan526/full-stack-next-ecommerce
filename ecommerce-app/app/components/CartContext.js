@@ -43,6 +43,14 @@ export default function CartContextProvider({ children }) {
     setCartProducts((prev) => prev.filter((p) => p._id !== product._id));
   };
 
+  const calculateTotalPrice = () => {
+    return cartProducts.reduce(
+      (total, product) => total + product.price * product.quantity,
+      0
+    ).toFixed(2);
+  };
+
+
   // Use useEffect to access localStorage on the client side
   useEffect(() => {
     // Check if 'window' exists to ensure it's running on the client side
@@ -67,6 +75,7 @@ export default function CartContextProvider({ children }) {
         decrementProductFromCart,
         clearCart,
         deleteProduct,
+        calculateTotalPrice,
       }}
     >
       {children}
