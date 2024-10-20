@@ -1,9 +1,17 @@
+'use client'
+
 import Image from "next/image";
 import Link from "next/link";
-import heroImage from "./../public/polo2.jpg"; // Default image for the hero section
-import shirt from "./../public/shirt.png"; // Example image for products
+import heroImage from "./../public/polo2.jpg"; 
+import shirt from "./../public/shirt.png"; 
+import { useContext } from "react";
+import { CartContext } from "./CartContext"; 
 
 export default function FeaturedProductsPage({ products }) {
+    console.log("product",products);
+
+    const { addProductToCart} = useContext(CartContext)
+
   return (
     <div className="bg-gray-100">
       {/* Hero Section */}
@@ -41,7 +49,6 @@ export default function FeaturedProductsPage({ products }) {
         </div>
       </div>
 
-      {/* Products List Section */}
       <div className="bg-white py-12">
         <div className="max-w-full px-4 md:px-12 mx-auto">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Products</h2>
@@ -52,34 +59,28 @@ export default function FeaturedProductsPage({ products }) {
                   key={product._id}
                   className="p-4 bg-white rounded-lg shadow-lg"
                 >
-                  {/* Product Image with container */}
                   <div className="relative w-full h-64 overflow-hidden rounded-lg">
                     <Image
-                      src={shirt} // Using a default image for now
-                      alt={product.name}
-                      layout="fill" // Ensures the image fills the container
-                      objectFit="contain" // Ensures the image fits within the container without stretching or being cut off
+                      src={shirt}
+                      alt={product.title}
+                      layout="fill" 
+                      objectFit="contain" 
                       className="rounded-lg"
                     />
                   </div>
-                  {/* Product Name */}
                   <h3 className="text-lg font-semibold text-gray-900 mt-4">
-                    {product.name}
+                    {product.title}
                   </h3>
 
-                  {/* Product Description */}
-                  <p className="mt-2 text-gray-700 text-sm">
+                  {/* <p className="mt-2 text-gray-700 text-sm">
                     {product.description}
-                  </p>
+                  </p> */}
 
-                  {/* Product Price */}
                   <p className="mt-4 text-gray-900 font-bold">
                     ${product.price}
                   </p>
 
-                  {/* Action Buttons */}
                   <div className="mt-4 flex space-x-2">
-                    {/* View Details Button */}
                     <Link
                       href={`/products/${product._id}`}
                       className="inline-block px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all"
@@ -87,8 +88,7 @@ export default function FeaturedProductsPage({ products }) {
                       View Details
                     </Link>
 
-                    {/* Add to Cart Button */}
-                    <button className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                    <button onClick={()=>addProductToCart(product)} className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
                       Add to Cart
                     </button>
                   </div>

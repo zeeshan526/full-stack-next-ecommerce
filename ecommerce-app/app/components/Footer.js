@@ -28,7 +28,6 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-12 relative">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
-        {/* About Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4">About Us</h2>
           <p className="text-gray-400">
@@ -36,7 +35,6 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Links Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2">
@@ -63,7 +61,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Newsletter Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4">Newsletter</h2>
           <p className="text-gray-400 mb-4">
@@ -81,7 +78,6 @@ export default function Footer() {
           </form>
         </div>
 
-        {/* Social Media Section */}
         <div>
           <h2 className="text-2xl font-semibold mb-4">Follow Us</h2>
           <div className="flex space-x-4">
@@ -131,7 +127,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Scroll to Top Arrow */}
       {isVisible && (
         <div
           onClick={scrollToTop}

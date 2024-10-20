@@ -1,8 +1,10 @@
 'use client'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Link from "next/link";
+import { CartContext } from "./CartContext";
 
 export default function Header() {
+    const {cartProducts} = useContext(CartContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -21,8 +23,8 @@ export default function Header() {
           <Link href={'/'}>Home</Link>
           <Link href={'/products'}>Products</Link>
           <Link href={'/category'}>Category</Link>
-          <Link href={'/account'}>Account</Link>
-          <Link href={'/cart'}>Cart(0)</Link>
+          <Link href={'account'}>Account</Link>
+          <Link href={'/cart'}>Cart ({cartProducts.length})</Link>
         </nav>
 
         {/* Mobile Menu Button */}
