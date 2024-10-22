@@ -1,77 +1,69 @@
 import clientPromise from "../../lib/mongodb";
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(request) {
   try {
     const data = await request.json();
-
-    // Destructure the nested userDetails and orderDetails from the request body
     const { userDetails, orderDetails } = data;
 
-    // Validate userDetails fields
-    const { fullName, email, shippingAddress } = userDetails;
-    const { city, postalCode, country, address } = shippingAddress;
-
-    // Validate orderDetails fields
-    const { cartProducts, totalPrice, currency } = orderDetails;
-
-    // Server-side validation: ensure all fields are present
-    if (!fullName || !email || !city || !postalCode || !country || !address || !cartProducts || cartProducts.length === 0 || !totalPrice || !currency) {
-      return new Response(
-        JSON.stringify({ error: "All fields (userDetails, shippingAddress, and order details) are required" }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+    // Validate user details and order details
+    if (!userDetails || !orderDetails || !orderDetails.cartProducts || !orderDetails.totalPrice || !orderDetails.paymentMethod) {
+      console.log('Invalid data:', data);
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    const client = await clientPromise; // Get the MongoDB client
+    // MongoDB connection
+    const client = await clientPromise;
     const db = client.db("next-ecommerce");
 
-    // Construct the order data to insert into MongoDB
+    // Insert order into MongoDB
     const orderData = {
-      userDetails: {
-        fullName,
-        email,
-        shippingAddress: {
-          city,
-          postalCode,
-          country,
-          address,
-        },
-      },
-      orderDetails: {
-        cartProducts,
-        totalPrice,
-        currency,
-      },
-      createdAt: new Date(), // Store when the order was created
+      userDetails: userDetails,
+      orderDetails: orderDetails,
+      paymentMethod: orderDetails.paymentMethod,
+      paymentStatus: orderDetails.paymentMethod === 'cod' ? 'pending' : 'paid', // If COD, payment status is pending
+      createdAt: new Date(),
     };
 
-    // Insert the new order into the "orders" collection
     const result = await db.collection("orders").insertOne(orderData);
 
-    // Return success response with the inserted order ID
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: "Order created successfully!",
-        orderId: result.insertedId,  // Return the ID of the newly created order
-      }),
-      {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  } catch (error) {
-    console.error("Error inserting order into MongoDB:", error);
+    // If payment method is 'card', create Stripe PaymentIntent
+    if (orderDetails.paymentMethod === 'card') {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(orderDetails.totalPrice * 100), // Stripe accepts amounts in cents
+        currency: orderDetails.currency,
+        metadata: { orderId: result.insertedId.toString() },
+        payment_method_types: ['card'],
+      });
 
-    return new Response(
-      JSON.stringify({ error: `Failed to create order: ${error.message}` }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+      return new Response(JSON.stringify({
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+        orderId: result.insertedId,
+      }), {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      });
+    } else {
+      // For COD, return success without creating a PaymentIntent
+      return new Response(JSON.stringify({
+        success: true,
+        orderId: result.insertedId,
+      }), {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  } catch (error) {
+    console.error("Error processing order or payment:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
