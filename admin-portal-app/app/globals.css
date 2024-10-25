@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css or index.css */
+body {
+  font-family: 'Roboto', sans-serif; /* Replace 'Roboto' with your desired font */
+}
+
+
 input, textarea{
   @apply border-2 border-gray-200 p-2 rounded-md px-1 w-full;
 }
