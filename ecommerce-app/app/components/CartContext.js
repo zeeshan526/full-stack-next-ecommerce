@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 export const CartContext = createContext({});
 
@@ -18,6 +19,7 @@ export default function CartContextProvider({ children }) {
         return [...prev, { ...product, quantity: 1 }];
       }
     });
+    toast.success('Product Added to cart!');
   };
 
   const decrementProductFromCart = (product) => {
@@ -33,6 +35,7 @@ export default function CartContextProvider({ children }) {
         return prev;
       }
     });
+    toast.success('Product decremented from cart!');
   };
 
   const clearCart = () => {
@@ -41,6 +44,7 @@ export default function CartContextProvider({ children }) {
 
   const deleteProduct = (product) => {
     setCartProducts((prev) => prev.filter((p) => p._id !== product._id));
+    toast.success('Product removed from cart!');
   };
 
   const calculateTotalPrice = () => {
