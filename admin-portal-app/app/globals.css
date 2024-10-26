@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* globals.css or index.css */
 body {
-  font-family: 'Roboto', sans-serif; /* Replace 'Roboto' with your desired font */
+  font-family: 'Roboto', sans-serif; 
 }
 
 

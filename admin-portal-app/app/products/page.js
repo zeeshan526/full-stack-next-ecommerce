@@ -1,12 +1,11 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { useRouter } from 'next/navigation';
-import { Toaster, toast } from 'react-hot-toast';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { useRouter } from "next/navigation";
+import { Toaster, toast } from "react-hot-toast";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -32,8 +31,7 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  console.log("products",products);
-  
+  console.log("products", products);
 
   const openModal = (id) => {
     setSelectedProductId(id);
@@ -49,7 +47,9 @@ export default function ProductsPage() {
     setLoading(true);
     try {
       await axios.delete(`/api/products/${selectedProductId}`);
-      setProducts(products.filter((product) => product._id !== selectedProductId));
+      setProducts(
+        products.filter((product) => product._id !== selectedProductId)
+      );
       toast.success("Product has been deleted!");
     } catch (error) {
       console.error("Failed to delete product:", error);
@@ -66,7 +66,12 @@ export default function ProductsPage() {
 
   return (
     <div className="p-4">
-      <Link href={'/products/new'} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">Add Product</Link>
+      <Link
+        href={"/products/new"}
+        className="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
+      >
+        Add Product
+      </Link>
 
       {loading ? (
         <div className="flex justify-center items-center mt-6">
@@ -88,7 +93,7 @@ export default function ProductsPage() {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Category
-                      </th>
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Description
                     </th>
@@ -103,23 +108,33 @@ export default function ProductsPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {products.map((product) => (
                     <tr key={product._id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.title}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      <Image
-                      src={
-                        product.images && product.images.length > 0
-                          ? product.images[0]
-                          : "/images/placeholder.png"
-                      }
-                      alt={product.title}
-                      width={60}
-                      height={60}
-                      className="rounded-lg"
-                    />
+                        {product.title}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.categoryName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.description}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <Image
+                          src={
+                            product.images && product.images.length > 0
+                              ? product.images[0]
+                              : "/images/placeholder.png"
+                          }
+                          alt={product.title}
+                          width={60}
+                          height={60}
+                          className="rounded-lg"
+                        />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {product.categoryName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {product.description}
+                      </td>
+                      <td className="py-3 px-6 text-center">
+                        <span className=" bg-green-500 px-3 py-2 whitespace-nowrap text-sm text-white rounded-lg font">
+                          ${product.price}
+                        </span>
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-center items-center mt-8">
                         <button
                           className="flex items-center text-indigo-600 hover:text-indigo-900 font-bold px-3 py-1 rounded-md border border-indigo-600 hover:bg-indigo-100 transition duration-200 mr-2"
@@ -140,7 +155,9 @@ export default function ProductsPage() {
               </table>
             </div>
           ) : (
-            <p className="mt-4 text-center text-gray-600">No products available.</p>
+            <p className="mt-4 text-center text-gray-600">
+              No products available.
+            </p>
           )}
         </div>
       )}
@@ -153,11 +170,15 @@ export default function ProductsPage() {
           <div
             className={`bg-white p-8 rounded-lg shadow-lg max-w-md w-full transform transition-transform duration-500 ease-out`}
             style={{
-              transform: showModal ? 'scale(1)' : 'scale(0.95)', // Smooth scaling effect
+              transform: showModal ? "scale(1)" : "scale(0.95)", // Smooth scaling effect
             }}
           >
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Confirm Deletion</h2>
-            <p className="mb-6 text-center text-gray-500">Are you sure you want to delete this product?</p>
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+              Confirm Deletion
+            </h2>
+            <p className="mb-6 text-center text-gray-500">
+              Are you sure you want to delete this product?
+            </p>
             <div className="flex justify-center space-x-4">
               <button
                 className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300 ease-in-out transform hover:scale-105"
@@ -175,8 +196,6 @@ export default function ProductsPage() {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
