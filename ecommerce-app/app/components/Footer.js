@@ -39,15 +39,15 @@ export default function Footer() {
           <h2 className="text-2xl font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2">
             <li>
-              <Link href="/products" className="text-gray-400 hover:text-white">
+              <Link href="/shop" className="text-gray-400 hover:text-white">
                 Products
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/category" className="text-gray-400 hover:text-white">
                 Categories
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/about" className="text-gray-400 hover:text-white">
                 About Us
@@ -72,7 +72,7 @@ export default function Footer() {
               placeholder="Enter your email"
               className="w-full px-3 py-2 rounded-l-md text-gray-800"
             />
-            <button className="bg-blue-600 px-4 py-2 rounded-r-md hover:bg-blue-700">
+            <button className="bg-orange-400 px-4 py-2 rounded-r-md hover:bg-orange-500">
               Subscribe
             </button>
           </form>
@@ -150,7 +150,7 @@ export default function Footer() {
       )}
 
       <div className="border-t border-gray-700 mt-12 pt-6 text-center text-gray-400">
-        <p>&copy; 2024 My E-Commerce Store. All rights reserved.</p>
+        <p>&copy; 2024 Trevixa. All rights reserved.</p>
       </div>
     </footer>
   );

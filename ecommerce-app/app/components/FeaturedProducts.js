@@ -31,7 +31,7 @@ export default function FeaturedProductsPage({ products }) {
 
           <Link
             href="/products"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+            className="inline-block px-6 py-3 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-all"
           >
             Shop Now
           </Link>
@@ -76,25 +76,21 @@ export default function FeaturedProductsPage({ products }) {
                     {product.title}
                   </h3>
 
-                  {/* <p className="mt-2 text-gray-700 text-sm">
-                    {product.description}
-                  </p> */}
-
                   <p className="mt-4 text-gray-900 font-bold">
                     ${product.price}
                   </p>
 
-                  <div className="mt-4 flex space-x-2">
+                  <div className="mt-4 flex space-x-2 justify-between px-8">
                     <Link
                       href={`/products/${product._id}`}
-                      className="inline-block px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all"
+                      className="inline-block px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300 transition-all"
                     >
                       View Details
                     </Link>
 
                     <button
                       onClick={() => addProductToCart(product)}
-                      className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+                      className="inline-block px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-all"
                     >
                       Add to Cart
                     </button>
