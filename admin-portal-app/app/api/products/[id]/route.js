@@ -34,6 +34,7 @@ export async function GET(request, { params }) {
           price: 1,
           createdAt: 1,
           properties: 1,
+          images: 1,
           categoryId: "$categoryDetails._id", // Return the category ID for pre-selection
           categoryName: { $ifNull: ["$categoryDetails.categoryName", "Uncategorized"] }, // Include the category name or default
         }
@@ -81,6 +82,7 @@ export async function PATCH(request, { params }) {
     }
 
     const properties = data.properties ? data.properties : {};
+    const images =  data.images || [];
 
     // Update the product in the database
     const result = await db.collection("products").updateOne(
@@ -88,6 +90,7 @@ export async function PATCH(request, { params }) {
       {  $set: {
         ...data,
         properties: properties,
+        images: images
       }}
     );
 

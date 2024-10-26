@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import heroImage from "./../public/polo2.jpg"; 
-import shirt from "./../public/shirt.png"; 
+import heroImage from "./../public/polo2.jpg";
+import shirt from "./../public/shirt.png";
 import { useContext } from "react";
-import { CartContext } from "./CartContext"; 
+import { CartContext } from "./CartContext";
 
 export default function FeaturedProductsPage({ products }) {
-    console.log("product",products);
+  console.log("product", products);
 
-    const { addProductToCart} = useContext(CartContext)
+  const { addProductToCart } = useContext(CartContext);
 
   return (
     <div className="bg-gray-100">
@@ -61,10 +61,14 @@ export default function FeaturedProductsPage({ products }) {
                 >
                   <div className="relative w-full h-64 overflow-hidden rounded-lg">
                     <Image
-                      src={shirt}
+                      src={
+                        product.images && product.images.length > 0
+                          ? product.images[0]
+                          : "/images/placeholder.png"
+                      }
                       alt={product.title}
-                      layout="fill" 
-                      objectFit="contain" 
+                      layout="fill"
+                      objectFit="contain"
                       className="rounded-lg"
                     />
                   </div>
@@ -88,7 +92,10 @@ export default function FeaturedProductsPage({ products }) {
                       View Details
                     </Link>
 
-                    <button onClick={()=>addProductToCart(product)} className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                    <button
+                      onClick={() => addProductToCart(product)}
+                      className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+                    >
                       Add to Cart
                     </button>
                   </div>

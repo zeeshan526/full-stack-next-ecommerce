@@ -21,7 +21,7 @@ export default function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">
           <Link href={'/'}>Home</Link>
-          <Link href={'/products'}>Products</Link>
+          <Link href={'/shop'}>Shop</Link>
           <Link href={'/category'}>Category</Link>
           <Link href={'account'}>Account</Link>
           <Link href={'/cart'}>Cart ({cartProducts.length})</Link>

@@ -23,6 +23,7 @@ export async function POST(request) {
       const productData = {
         ...data,
         category: new ObjectId(data.category), // Convert category to ObjectId
+        images: data.images || [],
         createdAt: new Date(),
       };
   
@@ -81,10 +82,13 @@ export async function GET() {
           description: 1,
           price: 1,
           createdAt: 1,
+          images: 1,
           categoryName: { $ifNull: ["$categoryDetails.categoryName", "Uncategorized"] }, // Category name or default to 'Uncategorized'
         }
       }
-    ]).toArray();
+    ])
+    .sort({ createdAt: -1 })
+    .toArray();
 
     return new Response(JSON.stringify(products), {
       status: 200,

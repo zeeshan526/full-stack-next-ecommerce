@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { Toaster, toast } from 'react-hot-toast';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
+import Image from "next/image";
 
 
 export default function ProductsPage() {
@@ -82,6 +83,9 @@ export default function ProductsPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Title
                     </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Image
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Category
                       </th>
@@ -100,10 +104,23 @@ export default function ProductsPage() {
                   {products.map((product) => (
                     <tr key={product._id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.title}</td>
-                      <td>{product.categoryName}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <Image
+                      src={
+                        product.images && product.images.length > 0
+                          ? product.images[0]
+                          : "/images/placeholder.png"
+                      }
+                      alt={product.title}
+                      width={60}
+                      height={60}
+                      className="rounded-lg"
+                    />
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.categoryName}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.description}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.price}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex justify-center items-center mt-8">
                         <button
                           className="flex items-center text-indigo-600 hover:text-indigo-900 font-bold px-3 py-1 rounded-md border border-indigo-600 hover:bg-indigo-100 transition duration-200 mr-2"
                           onClick={() => editProduct(product._id)}

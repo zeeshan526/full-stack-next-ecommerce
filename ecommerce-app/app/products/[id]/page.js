@@ -48,13 +48,17 @@ const ProductDetailPage = ({ params }) => {
     <div className="container mx-auto px-4 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="relative w-full h-96">
-          <Image
-            src={shirt}
-            alt={product.title}
-            layout="fill"
-            objectFit="contain"
-            className="rounded-lg shadow-lg"
-          />
+        <Image
+                      src={
+                        product.images && product.images.length > 0
+                          ? product.images[0]
+                          : "/images/placeholder.png"
+                      }
+                      alt={product.title}
+                      layout="fill"
+                      objectFit="contain"
+                      className="rounded-lg"
+                    />
         </div>
 
         <div className="space-y-6">
