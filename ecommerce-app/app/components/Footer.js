@@ -1,8 +1,12 @@
-'use client'
+"use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
-
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
+} from "react-icons/fa";
 
 export default function Footer() {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +37,9 @@ export default function Footer() {
         <div>
           <h2 className="text-2xl font-semibold mb-4">About Us</h2>
           <p className="text-gray-400">
-            We offer a wide range of high-quality Polo shirts and other apparel products for every occasion. Our mission is to bring you the best in style and comfort.
+            We offer a wide range of high-quality Polo shirts and other apparel
+            products for every occasion. Our mission is to bring you the best in
+            style and comfort.
           </p>
         </div>
 
@@ -83,19 +89,18 @@ export default function Footer() {
         <div>
           <h2 className="text-2xl font-semibold mb-4">Follow Us</h2>
           <div className="flex space-x-4">
-            
-          <a href="#" className="hover:text-orange-500">
-            <FaFacebookF className="w-6 h-6" />
-          </a>
-          <a href="#" className="hover:text-orange-500">
-            <FaTwitter className="w-6 h-6" />
-          </a>
-          <a href="#" className="hover:text-orange-500">
-            <FaInstagram className="w-6 h-6" />
-          </a>
-          <a href="#" className="hover:text-orange-500">
-            <FaLinkedinIn className="w-6 h-6" />
-          </a>
+            <a href="#" className="hover:text-orange-500">
+              <FaFacebookF className="w-6 h-6" />
+            </a>
+            <a href="#" className="hover:text-orange-500">
+              <FaTwitter className="w-6 h-6" />
+            </a>
+            <a href="#" className="hover:text-orange-500">
+              <FaInstagram className="w-6 h-6" />
+            </a>
+            <a href="#" className="hover:text-orange-500">
+              <FaLinkedinIn className="w-6 h-6" />
+            </a>
           </div>
         </div>
       </div>
