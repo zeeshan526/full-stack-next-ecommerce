@@ -51,11 +51,6 @@ export default function Footer() {
                 Products
               </Link>
             </li>
-            {/* <li>
-              <Link href="/category" className="text-gray-400 hover:text-white">
-                Categories
-              </Link>
-            </li> */}
             <li>
               <Link href="/about" className="text-gray-400 hover:text-white">
                 About Us

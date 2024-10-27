@@ -1,5 +1,3 @@
-// import clientPromise from '../../../lib/mongodb'; 
-
 import clientPromise from "@/app/lib/mongodb";
 
 export async function GET() {
@@ -7,7 +5,6 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db('next-ecommerce');
 
-    // Fetch all products
     const products = await db.collection('products').find({}).toArray();
 
     if (products.length > 0) {

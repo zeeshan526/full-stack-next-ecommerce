@@ -14,9 +14,7 @@ export default function FeaturedProductsPage({ products }) {
 
   return (
     <div className="bg-gray-100">
-      {/* Hero Section */}
       <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-12 py-12 md:py-24 max-w-full mx-auto">
-        {/* Left Side: Text */}
         <div className="md:w-1/2 space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
             The Best Premium Polo Shirts
@@ -37,7 +35,6 @@ export default function FeaturedProductsPage({ products }) {
           </Link>
         </div>
 
-        {/* Right Side: Image */}
         <div className="mt-8 md:mt-0 md:w-1/2 flex justify-center items-center">
           <Image
             src={heroImage}

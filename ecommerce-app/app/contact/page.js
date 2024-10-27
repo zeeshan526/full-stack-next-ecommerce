@@ -60,7 +60,7 @@ const ContactPage = () => {
         <div className="flex flex-col md:flex-row md:space-x-8 space-y-4 md:space-y-0 items-center justify-center">
           <div className="flex items-center space-x-2">
             <MailIcon className="w-6 h-6 text-gray-600" />
-            <p>support@yourbrand.com</p>
+            <p>support@trevixa.com</p>
           </div>
           <div className="flex items-center space-x-2">
             <PhoneIcon className="w-6 h-6 text-gray-600" />
