@@ -4,20 +4,54 @@
 
 
 .loader {
-    border: 8px solid #f3f3f3; 
-    border-top: 8px solid #3498db; 
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: auto; 
-    position: relative; 
-    top: 50%;
-    transform: translateY(-50%);
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  100% {
+    transform: rotate(360deg);
   }
-  
+}
+
+.thumbnail-container {
+  transition: scrollbar-color 0.3s ease;
+}
+
+.thumbnail-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.thumbnail-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thumbnail-container::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 4px;
+}
+
+.thumbnail-container {
+  scrollbar-width: none;
+}
+
+.thumbnail-container:hover {
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 transparent;
+}
+
+.thumbnail-container:hover::-webkit-scrollbar {
+  width: 8px;
+}
