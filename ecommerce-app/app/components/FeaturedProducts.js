@@ -80,7 +80,7 @@ export default function FeaturedProductsPage({ products }) {
                     ${product.price}
                   </p>
 
-                  <div className="mt-4 flex space-x-2 justify-between px-8">
+                  <div className="mt-4 flex space-x-2 justify-between">
                     <Link
                       href={`/products/${product._id}`}
                       className="inline-block px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300 transition-all"

@@ -67,7 +67,7 @@ const ProductDetailPage = ({ params }) => {
 
           <button
             onClick={() => addProductToCart(product)}
-            className="inline-block px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-all"
+            className="w-full inline-block px-4 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-all"
           >
             Add to Cart
           </button>
