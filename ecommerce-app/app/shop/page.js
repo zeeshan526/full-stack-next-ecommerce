@@ -3,6 +3,7 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
+import { BiGridAlt, BiGridSmall, BiGridHorizontal } from "react-icons/bi";
 import { CartContext } from "../components/CartContext";
 
 const Page = () => {
@@ -11,6 +12,7 @@ const Page = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [gridCols, setGridCols] = useState(5); // Default to 5 columns for desktop
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -49,21 +51,78 @@ const Page = () => {
     );
   }
 
+  // Map gridCols to actual Tailwind grid classes
+  const getGridColsClass = () => {
+    switch (gridCols) {
+      case 3:
+        return "lg:grid-cols-3";
+      case 4:
+        return "lg:grid-cols-4";
+      case 5:
+        return "lg:grid-cols-5";
+      default:
+        return "lg:grid-cols-5";
+    }
+  };
+
   return (
     <div className="bg-white py-12">
       <div className="max-w-full px-4 md:px-12 mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">All Products</h2>
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-96 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
+        <div className="flex justify-between items-center mb-10">
+          <div className=" w-full flex flex-col lg:flex-row justify-between items-start lg:items-center  space-y-4 lg:space-y-0 lg:space-x-4">
+            <h2 className="text-3xl font-bold text-gray-900">All Products</h2>
+
+            {/* Search Field */}
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full  lg:w-96 px-4 py-2 mr-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+
+          <div className="flex space-x-4 ml-3 items-center">
+            {/* Layout Buttons (Hidden on Mobile) */}
+            <div className="hidden lg:flex space-x-2">
+              <button
+                onClick={() => setGridCols(3)}
+                className={`px-2 py-1 rounded-lg ${
+                  gridCols === 3
+                    ? "bg-orange-400 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                <BiGridAlt />
+              </button>
+              <button
+                onClick={() => setGridCols(4)}
+                className={`px-2 py-1 rounded-lg ${
+                  gridCols === 4
+                    ? "bg-orange-400 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                <BiGridSmall />
+              </button>
+              <button
+                onClick={() => setGridCols(5)}
+                className={`px-2 py-1 rounded-lg ${
+                  gridCols === 5
+                    ? "bg-orange-400 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                <BiGridHorizontal />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Product Grid */}
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-1 ${getGridColsClass()} gap-4`}
+        >
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <div
